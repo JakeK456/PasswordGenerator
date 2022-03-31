@@ -133,7 +133,7 @@ var passwordGenerator = {
       return "Click Generate Password.\nMake sure at least one criteria (lowercase, uppercase, numbers, special chars) is chosen.";
     }
 
-    for (var i = 0; i <= this.length; i++){
+    for (var i = 0; i < this.length; i++){
       password += this.charAccordingToCriteria(functionList);
     }
     return password;
