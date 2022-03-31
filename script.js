@@ -1,3 +1,6 @@
+var continueFlag = true;
+var generateBtn = document.querySelector("#generate");
+
 const charSets = {
   alphabet: "abcdefghijklmnopqrstuvwxyz",
   digits: "0123456789",
@@ -20,25 +23,25 @@ const charSets = {
   },
 }
 
-var password = {
-  length: 128,
-  lowerCase: true,
-  upperCase: true,
-  numeric: true,
-  specialChars: true,
+var passwordGenerator = {
+  length: 0,
+  lowerCase: false,
+  upperCase: false,
+  numeric: false,
+  specialChars: false,
 
   generatePassword(){
-    var passcode = "";
+    var password = "";
     var functionList = this.generateFunctionList()
 
     if (functionList.length === 0){
-      return "Criteria Excludes Everything!";
+      return "Click Generate Password.\nMake sure at least one criteria (lowercase, uppercase, numbers, special chars) is chosen.";
     }
 
     for (var i = 0; i <= this.length; i++){
-      passcode += this.charAccordingToCriteria(functionList);
+      password += this.charAccordingToCriteria(functionList);
     }
-    return passcode;
+    return password;
   },
 
   charAccordingToCriteria(functionList){
@@ -74,16 +77,28 @@ var password = {
   }
 }
 
-// Assignment Code
-var generateBtn = document.querySelector("#generate");
+
+
+
+
+
+
 
 function displayErrorMsg(message){
   return window.alert(message);
 }
-
-function promptUserForPasswordLength(){
+ 
+function promptAndSetLength(){
   var userInput = window.prompt("How many characters would you like the password to be?\nEnter a number between 8 and 128:");
-  return userInput;
+  var isValid = checkLengthIsValid(userInput);
+  if (isValid){
+    passwordGenerator.length = userInput;
+    continueFlag = true;
+  }
+  else{
+    displayErrorMsg("Length Invalid.\nMake sure to enter a number between 8 and 128.\nTry Again.");
+    continueFlag = false;
+  }
 }
 
 function checkLengthIsValid(length){
@@ -95,35 +110,60 @@ function checkLengthIsValid(length){
   }
 }
 
-function promptUserAndCheckPasswordLength(){
-  var userInput = promptForLength();
-  var lengthIsValid = checkLengthIsValid(userInput);
-
-  if (lengthIsValid){
-    return userInput;
+function promptAndSetLowerCase(){
+  var userInput = window.confirm("Do you want to include lower case characters?\n\nClick \"Ok\" for Yes.\nClick \"Cancel\" for No.");
+  if (userInput){
+    passwordGenerator.lowerCase = true;
   }
   else{
-    displayErrorMsg("Length Invalid.\nMake sure to enter a number between 8 and 128.\nTry Again.");
+    passwordGenerator.lowerCase = false;
   }
 }
 
-function populatePasswordCriteria(){
-  promptUserForLength();
-  promptUserForLowerCase();
-  promptUserForUpperCase();
-
-
+function promptAndSetUpperCase(){
+  var userInput = window.confirm("Do you want to include upper case characters?\n\nClick \"Ok\" for Yes.\nClick \"Cancel\" for No.");
+  if (userInput){
+    passwordGenerator.upperCase = true;
+  }
+  else{
+    passwordGenerator.upperCase = false;
+  }
 }
 
-function generatePassword() {
-  var password = "password";
+function promptAndSetNumeric(){
+  var userInput = window.confirm("Do you want to include numbers?\n\nClick \"Ok\" for Yes.\nClick \"Cancel\" for No.");
+  if (userInput){
+    passwordGenerator.numeric = true;
+  }
+  else{
+    passwordGenerator.numeric = false;
+  }
+}
 
-  promptUserForCriteria();
+function promptAndSetSpecialChars(){
+  var userInput = window.confirm("Do you want to include special characters?\n\nClick \"Ok\" for Yes.\nClick \"Cancel\" for No.");
+  if (userInput){
+    passwordGenerator.specialChars = true;
+  }
+  else{
+    passwordGenerator.specialChars = false;
+  }
+}
 
+function setPasswordCriteria(){
+  promptAndSetLength();
 
-  var passwordLength = promptUserAndCheckPasswordLength();
-  
-  console.log(passwordLength);
+  if (continueFlag){
+    promptAndSetLowerCase();
+    promptAndSetUpperCase();
+    promptAndSetNumeric();
+    promptAndSetSpecialChars();
+  }
+}
+
+function generatePassword() { 
+  setPasswordCriteria();
+  var password = passwordGenerator.generatePassword();
 
   return password;
 }
