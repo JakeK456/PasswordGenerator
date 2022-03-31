@@ -1,93 +1,36 @@
 var continueFlag = true;
 var generateBtn = document.querySelector("#generate");
 
-const charSets = {
-  alphabet: "abcdefghijklmnopqrstuvwxyz",
-  digits: "0123456789",
-  specialCharacters: " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+// Add event listener to generate button
+generateBtn.addEventListener("click", writePassword);
 
-  getRandomLowerCaseLetter(){
-    return charSets.alphabet.charAt(Math.floor(Math.random() * charSets.alphabet.length)).toLowerCase();
-  },
+// Write password to the #password input
+function writePassword() {
+  var password = generatePassword();
+  var passwordText = document.querySelector("#password");
 
-  getRandomUpperCaseLetter(){
-    return charSets.alphabet.charAt(Math.floor(Math.random() * charSets.alphabet.length)).toUpperCase();
-  },
-
-  getRandomDigit(){
-    return charSets.digits.charAt(Math.floor(Math.random() * charSets.digits.length));
-  },
-
-  getRandomSpecialChar(){
-    return charSets.specialCharacters.charAt(Math.floor(Math.random() * charSets.specialCharacters.length));
-  },
+  passwordText.value = password;
 }
 
-var passwordGenerator = {
-  length: 0,
-  lowerCase: false,
-  upperCase: false,
-  numeric: false,
-  specialChars: false,
+function generatePassword() { 
+  passwordGenerator.resetProperties();
+  setPasswordCriteria();
+  var password = passwordGenerator.generatePassword();
 
-  generatePassword(){
-    var password = "";
-    var functionList = this.generateFunctionList()
+  return password;
+}
 
-    if (functionList.length === 0){
-      return "Click Generate Password.\nMake sure at least one criteria (lowercase, uppercase, numbers, special chars) is chosen.";
-    }
+function setPasswordCriteria(){
+  promptAndSetLength();
 
-    for (var i = 0; i <= this.length; i++){
-      password += this.charAccordingToCriteria(functionList);
-    }
-    return password;
-  },
-
-  charAccordingToCriteria(functionList){
-    var randomFunction = this.selectRandomFunction(functionList);
-    var randomCharacter = randomFunction();
-    return randomCharacter;
-  },
-
-  selectRandomFunction(functionList){
-    return functionList[(Math.floor(Math.random() * functionList.length))];;
-  },
-
-  generateFunctionList(){
-    var functionList = [];
-
-    if (this.lowerCase){
-      functionList.push(charSets.getRandomLowerCaseLetter);
-    }
-
-    if (this.upperCase){
-      functionList.push(charSets.getRandomUpperCaseLetter);
-    }
-
-    if (this.numeric){
-      functionList.push(charSets.getRandomDigit);
-    }
-
-    if (this.specialChars){
-      functionList.push(charSets.getRandomSpecialChar);
-    }
-
-    return functionList;
+  if (continueFlag){
+    promptAndSetLowerCase();
+    promptAndSetUpperCase();
+    promptAndSetNumeric();
+    promptAndSetSpecialChars();
   }
 }
 
-
-
-
-
-
-
-
-function displayErrorMsg(message){
-  return window.alert(message);
-}
- 
 function promptAndSetLength(){
   var userInput = window.prompt("How many characters would you like the password to be?\nEnter a number between 8 and 128:");
   var isValid = checkLengthIsValid(userInput);
@@ -108,6 +51,10 @@ function checkLengthIsValid(length){
   else{
     return false;
   }
+}
+
+function displayErrorMsg(message){
+  return window.alert(message);
 }
 
 function promptAndSetLowerCase(){
@@ -150,32 +97,86 @@ function promptAndSetSpecialChars(){
   }
 }
 
-function setPasswordCriteria(){
-  promptAndSetLength();
+const charSets = {
+  alphabet: "abcdefghijklmnopqrstuvwxyz",
+  digits: "0123456789",
+  specialCharacters: " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
 
-  if (continueFlag){
-    promptAndSetLowerCase();
-    promptAndSetUpperCase();
-    promptAndSetNumeric();
-    promptAndSetSpecialChars();
+  getRandomLowerCaseLetter(){
+    return charSets.alphabet.charAt(Math.floor(Math.random() * charSets.alphabet.length)).toLowerCase();
+  },
+
+  getRandomUpperCaseLetter(){
+    return charSets.alphabet.charAt(Math.floor(Math.random() * charSets.alphabet.length)).toUpperCase();
+  },
+
+  getRandomDigit(){
+    return charSets.digits.charAt(Math.floor(Math.random() * charSets.digits.length));
+  },
+
+  getRandomSpecialChar(){
+    return charSets.specialCharacters.charAt(Math.floor(Math.random() * charSets.specialCharacters.length));
+  },
+}
+
+var passwordGenerator = {
+  length: 0,
+  lowerCase: false,
+  upperCase: false,
+  numeric: false,
+  specialChars: false,
+
+  resetProperties(){
+    this.length = 0;
+    this.lowerCase = false;
+    this.upperCase = false;
+    this.numeric = false;
+    this.specialChars = false;
+  },
+
+  generatePassword(){
+    var password = "";
+    var functionList = this.generateFunctionList()
+
+    if (functionList.length === 0){
+      return "Click Generate Password.\nMake sure at least one criteria (lowercase, uppercase, numbers, special chars) is chosen.";
+    }
+
+    for (var i = 0; i <= this.length; i++){
+      password += this.charAccordingToCriteria(functionList);
+    }
+    return password;
+  },
+
+  generateFunctionList(){
+    var functionList = [];
+
+    if (this.lowerCase){
+      functionList.push(charSets.getRandomLowerCaseLetter);
+    }
+
+    if (this.upperCase){
+      functionList.push(charSets.getRandomUpperCaseLetter);
+    }
+
+    if (this.numeric){
+      functionList.push(charSets.getRandomDigit);
+    }
+
+    if (this.specialChars){
+      functionList.push(charSets.getRandomSpecialChar);
+    }
+
+    return functionList;
+  },
+
+  charAccordingToCriteria(functionList){
+    var randomFunction = this.selectRandomFunction(functionList);
+    var randomCharacter = randomFunction();
+    return randomCharacter;
+  },
+
+  selectRandomFunction(functionList){
+    return functionList[(Math.floor(Math.random() * functionList.length))];;
   }
 }
-
-function generatePassword() { 
-  setPasswordCriteria();
-  var password = passwordGenerator.generatePassword();
-
-  return password;
-}
-
-// Write password to the #password input
-function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
-
-}
-
-// Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
