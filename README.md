@@ -8,8 +8,8 @@ to include special characters).
 
 ## Installation
 
-To view the code, clone the repository to your local machine. Open index.html
-and style.css in your favorite ide. 
+To view the code, clone the repository to your local machine. Open index.html, 
+style.css, and script.js in your favorite ide. 
 
 To view the website, visit the site on GitHub Pages: 
 https://jakek456.github.io/PasswordGenerator/
